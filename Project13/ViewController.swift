@@ -46,7 +46,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let beginImage = CIImage(image: currentImage)
         currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
 
-        applyProcessing()
+        applyProcessing(new: true)
     }
 
     @IBAction func changeFilter(_ sender: UIButton) {
@@ -107,7 +107,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         applyProcessing()
     }
     
-    func applyProcessing() {
+    func applyProcessing(new: Bool = false) {
         let inputKeys = currentFilter.inputKeys
         
         if inputKeys.contains(kCIInputIntensityKey) {
@@ -130,7 +130,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         if let cgImage = context.createCGImage(outputImage, from: outputImage.extent) {
             let processedImage = UIImage(cgImage: cgImage)
-            imageView.image = processedImage
+            if new {
+                imageView.alpha = 0
+                imageView.image = processedImage
+                UIView.animate(withDuration: 1.0) {
+                    self.imageView.alpha = 1
+                }
+            } else {
+                imageView.image = processedImage
+            }
         }
     }
     
